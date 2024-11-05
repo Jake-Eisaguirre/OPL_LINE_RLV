@@ -31,13 +31,14 @@ line_rlv_q <- "select * from AA_RESERVE_LINEHOLDER"
 raw_line_rlv <- dbGetQuery(db_connection_pg, line_rlv_q)
 
 clean_line_rlv <- raw_line_rlv %>% 
-  mutate(BASE = if_else(BASE == "HAL", "HNL", BASE),
-         CREW_TYPE = if_else(PAIRING_POSITION %in% c("CA", "FO"), "P", "FA")) %>% 
+  mutate(#BASE = if_else(BASE == "HAL", "HNL", BASE),
+          CREW_TYPE = if_else(PAIRING_POSITION %in% c("CA", "FO"), "P", "FA")) %>% 
   rename(DATE=PAIRING_DATE,
          SEAT = PAIRING_POSITION,
          FLEET = EQUIPMENT) %>% 
   relocate(CREW_TYPE, .before = SEAT) %>% 
-  mutate(AIRLINE = "HA", .before = CREW_TYPE)
+  mutate(AIRLINE = "HA", .before = CREW_TYPE) %>% 
+  distinct()
 
 write_csv(clean_line_rlv, "F:/INFLIGHT_RESERVE_LINE.csv")
 
